@@ -8,7 +8,7 @@
     mc:Ignorable="d">
 
     <Page.Resources>
-
+        <local:Cliente x:Key="cliente" />
         <Storyboard x:Key="VoiceAnimation" RepeatBehavior="forever" Duration="0:0:4" AutoReverse="True" >
             <DoubleAnimation/>
         </Storyboard>
@@ -30,6 +30,21 @@
         </DataTemplate>
     </Page.Resources>
 
+    <Page.BottomAppBar>
+        <CommandBar x:Name="commandBsr">
+            <AppBarButton x:Name="notaVozAppBarButton" Label="Nota de voz" Icon="Microphone" Click="notaVozAppBarButton_Click" />
+            <AppBarButton x:Name="guardarNewNotaVozAppBarButton"  Label="Guardar" Icon="Save" Click="guardarNewNotaVozAppBarButton_Click"/>
+            <AppBarButton x:Name="LimpiarAppBarButton" Label="Limpiar" Click="LimpiarAppBarButton_Click" >
+                <AppBarButton.Icon>
+                    <BitmapIcon UriSource="Assets/appbar.draw.brush.reflection.png"/>
+                </AppBarButton.Icon>
+            </AppBarButton>
+
+            <CommandBar.SecondaryCommands>
+                <AppBarButton x:Name="nuevoMedicamentoSAppBar" Label="Agregar nuevo medicamento" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" />
+            </CommandBar.SecondaryCommands>
+        </CommandBar>
+    </Page.BottomAppBar>
     <!--
     Esta cuadrícula actúa como panel raíz de la página.
   -->
@@ -45,16 +60,12 @@
                 <Grid>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="Auto"/>
-                        <ColumnDefinition Width="857*"/>
-                        <ColumnDefinition Width="80" />
-                        <ColumnDefinition Width="75*" />
                     </Grid.ColumnDefinitions>
 
                     <TextBlock x:Name="pageTitle" x:Uid="Header" Text="Migrandes" Style="{StaticResource HeaderTextBlockStyle}" Grid.Column="0" 
                         VerticalAlignment="Top" IsHitTestVisible="false" TextWrapping="NoWrap" />
                 </Grid>
             </Hub.Header>
-
             <HubSection FontFamily="Segoe UI" FontSize="48" HorizontalAlignment="Stretch" RenderTransformOrigin="0.5,0.5" >
                 <HubSection.Header>
                     <Grid >
@@ -71,36 +82,60 @@
                 </HubSection.Header>
 
                 <DataTemplate>
-                    <Grid >
+                    <Grid x:Name="grid" Margin="0,0,-0.167,0" >
                         <Grid.RowDefinitions>
-                            <RowDefinition/>
-                            <RowDefinition/>
-                            <RowDefinition/>
-                            <RowDefinition/>
-                            <RowDefinition/>
-                            <RowDefinition/>
-                            <RowDefinition />
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
                         </Grid.RowDefinitions>
 
                         <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
                             <ColumnDefinition/>
-                            <ColumnDefinition Width="3*"/>
-                            <ColumnDefinition/>
-                            <ColumnDefinition />
+                            <ColumnDefinition Width="Auto" />
                         </Grid.ColumnDefinitions>
+                        <TextBlock Text="Descripción" Grid.ColumnSpan="3" />
+                        <TextBox x:Name="textBox" HorizontalAlignment="Center" 
+            				Grid.ColumnSpan="3" Grid.Row="1" PlaceholderText="Añade detalles que puedan servir a tu doctor." 
+            				HorizontalContentAlignment="Stretch" VerticalAlignment="Center" />
 
-                        <TextBox Header="Descripcion" Grid.ColumnSpan="4" />
+                        <TextBlock Text="Intensidad" Grid.Row="2" Grid.ColumnSpan="3"/>
+                        <Image Grid.Row="3" Source="Assets/appbar.smiley.grumpy.png" HorizontalAlignment="Center" VerticalAlignment="Center" />
+                        <Image Grid.Column="3" Grid.Row="3" Source="Assets/appbar.smiley.cry.png" HorizontalAlignment="Center" VerticalAlignment="Center"/>
 
                         <Slider Orientation="Horizontal" Header="Intensidad" 
             				Maximum="10" TickPlacement="Outside" Grid.Column="1" 
-            				Grid.Row="1" Grid.ColumnSpan="2" Minimum="1" 
-            				StepFrequency="1" TickFrequency="1" 
-                                Style="{StaticResource MySliderStyle}" />
+            				Grid.Row="3" Minimum="1" StepFrequency="1" 
+            				TickFrequency="1" Style="{StaticResource MySliderStyle}" BorderBrush="White" VerticalAlignment="Center" Margin="0,15,0,1" >
+                            <Slider.Background>
+                                <LinearGradientBrush EndPoint="1,1" StartPoint="0,0">
+                                    <GradientStop Color="#FF3A00FF" Offset="0.198"/>
+                                    <GradientStop Color="White"/>
+                                    <GradientStop Color="#FFFB0808" Offset="1"/>
+                                </LinearGradientBrush>
+                            </Slider.Background>
+                        </Slider>
+
+                        <TextBlock Grid.Row="4" Text="Ubicación" Grid.ColumnSpan="3" 
+            				HorizontalAlignment="Left" VerticalAlignment="Top"
+                                   />
+                        <Image Grid.Row="5" Grid.ColumnSpan="2" Source="Assets/th.jpg" Stretch="None" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        <TextBlock Text="Medicamentos" Grid.ColumnSpan="3" Grid.Row="6" />
+                        <ListView x:Name="listView"  Grid.Row="7" 
+            				Grid.ColumnSpan="3" HorizontalAlignment="Left"  
+            				VerticalAlignment="Top" ItemTemplate="{StaticResource Standard310x260ItemTemplate}" 
+                                  DataContext="{StaticResource cliente}" ItemsSource="{Binding Medicamentos}" />
+
+
+
 
                     </Grid>
                 </DataTemplate>
             </HubSection>
-
             <HubSection >
                 <HubSection.Header>
                     <Grid >
@@ -111,7 +146,7 @@
                         </Grid.ColumnDefinitions>
 
                         <Image Source="Assets/bookList.png" Stretch="UniformToFill" />
-                        <TextBlock Text="Registro" Grid.Column="1" FontSize="48" FontFamily="Segoe UI"/>
+                        <TextBlock Text="Diario" Grid.Column="1" FontSize="48" FontFamily="Segoe UI"/>
 
                     </Grid>
                 </HubSection.Header>
@@ -129,7 +164,7 @@
                 </DataTemplate>
             </HubSection>
 
-            <HubSection IsHeaderInteractive="True" DataContext="{Binding Section3Items}" d:DataContext="{Binding Groups[3], Source={d:DesignData Source=../Migrandes.Shared/DataModel/SampleData.json, Type=data:SampleDataSource}}"
+            <HubSection IsHeaderInteractive="True" DataContext="{Binding Section3Items}" 
                         x:Uid="Section3Header" Padding="40,40,40,32">
                 <HubSection.Header>
                     <Grid >

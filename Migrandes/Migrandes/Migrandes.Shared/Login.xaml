@@ -10,36 +10,27 @@
     <Page.BottomAppBar>
         <CommandBar x:Name="cmdBar" Visibility="Visible">
             <AppBarButton Icon="Accept" Label="Login" Click="AcceptButton_Click" />
+            <AppBarButton Icon="AddFriend" Label="Registrate" Click="AppBarButton_Click" />
         </CommandBar>
     </Page.BottomAppBar>
-    <Border HorizontalAlignment="Center" VerticalAlignment="Center" >
-        <Grid>
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="178*"/>
-                <ColumnDefinition Width="93*"/>
-            </Grid.ColumnDefinitions>
-            
-            <TextBox x:Name="LoginField" PlaceholderText="Ingrese su usuario" Margin="-37,-162,-59,0" 
-                     Height="63" VerticalAlignment="Top" Grid.ColumnSpan="2" FontSize="32"/>
-            
-            <PasswordBox x:Name="passwordBox" Header="" PlaceholderText="Ingresa tu contraseña" 
-                         Margin="-36,42,-59,0" Height="71" Grid.ColumnSpan="2" 
-                         HorizontalAlignment="Left" Width="380" FontSize="32" 
-                         LostFocus="passwordBox_Loaded" KeyUp="passwordBox_KeyUp"/>
-  
-            <TextBlock Text="Usuario" FontFamily="{Binding Header, ElementName=passwordBox}" 
-                       Style="{StaticResource HeaderTextBlockStyle}" Margin="-37,-282,26.667,314"/>
-            
-            <TextBlock FontFamily="{Binding Header, ElementName=passwordBox}" 
-                       Style="{StaticResource HeaderTextBlockStyle}" Margin="-37,-62,36.333,80" Grid.ColumnSpan="2">
-            	
-                <Run Text="Contraseña"/>
-            	
-                <LineBreak/>
-            	
-                <Run/>
-            
-            </TextBlock>
-        </Grid>
-    </Border>
+    <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
+       
+        <TextBlock Text="Usuario" FontFamily="{Binding Header, ElementName=passwordBox}" 
+    		Style="{StaticResource HeaderTextBlockStyle}" Grid.ColumnSpan="4" 
+                   Grid.Column="1" Grid.Row="1"/>
+
+        <TextBox x:Name="LoginField" PlaceholderText="Ingrese su usuario"
+    		VerticalAlignment="Stretch" Grid.ColumnSpan="4" FontSize="32" 
+                 Grid.Row="2" Grid.Column="1" 
+                 Height="{Binding ActualHeight, ElementName=passwordBox, Mode=OneWay}" HorizontalContentAlignment="Left" Margin="0,0,0,0.167"/>
+
+        <TextBlock Grid.ColumnSpan="4" Grid.Row="3" Grid.Column="1" 
+        	FontFamily="{Binding Header, ElementName=passwordBox}" 
+        	Style="{StaticResource HeaderTextBlockStyle}" Text="Contraseña" />
+
+        <PasswordBox x:Name="passwordBox" Header="" PlaceholderText="Ingresa tu contraseña" FontSize="32" LostFocus="passwordBox_Loaded" 
+                     KeyUp="passwordBox_KeyUp" Grid.ColumnSpan="4" Grid.Row="4" 
+                     Grid.Column="1" VerticalAlignment="Stretch" 
+                     HorizontalContentAlignment="Left" />
+    </StackPanel>
 </Page>

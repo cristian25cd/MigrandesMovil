@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.IO;
 using System.Net;
@@ -11,7 +12,7 @@ namespace Migrandes
 {
     public class Cliente
     {
-        private static String SERVIDOR = "https://morning-tor-3089.herokuapp.com";
+        private static String SERVIDOR = "https://boiling-dusk-7953.herokuapp.com";
         //GET
         private static String URI_EPISODIO_COMPLETO = "/paciente/episodioCompleto?id=";
         private static String URI_TODOS_LOS_EPISODIOS = "/paciente/getAllEpisodios?id=";
@@ -27,18 +28,121 @@ namespace Migrandes
         //DELETE
         private static String URI_ELIMINAR_PACIENTE = "/paciente?id=";
 
-        private String userName;
+        private String usuario;
+        private String nombres;
         private String password;
+        private ObservableCollection<Medicamento> medicamentos;
+        private ObservableCollection<Actividad> actividades;
+        private ObservableCollection<Episodio> episodios;
+        private String foto;
+
+        public string Usuario
+        {
+            get
+            {
+                return usuario;
+            }
+
+            set
+            {
+                usuario = value;
+            }
+        }
+
+        public string Nombres
+        {
+            get
+            {
+                return nombres;
+            }
+
+            set
+            {
+                nombres = value;
+            }
+        }
+
+        public string Password
+        {
+            get
+            {
+                return password;
+            }
+
+            set
+            {
+                password = value;
+            }
+        }
+
+        public string Foto
+        {
+            get
+            {
+                return foto;
+            }
+
+            set
+            {
+                foto = value;
+            }
+        }
+
+        internal ObservableCollection<Medicamento> Medicamentos
+        {
+            get
+            {
+                return medicamentos;
+            }
+
+            set
+            {
+                medicamentos = value;
+            }
+        }
+
+        internal ObservableCollection<Actividad> Actividades
+        {
+            get
+            {
+                return actividades;
+            }
+
+            set
+            {
+                actividades = value;
+            }
+        }
+
+        internal ObservableCollection<Episodio> Episodios
+        {
+            get
+            {
+                return episodios;
+            }
+
+            set
+            {
+                episodios = value;
+            }
+        }
+
+
+
+
+
+        //TODO Lista medicamentos, actividades, episodios
+
         public Cliente()
         {
-            //authenticar(userName, password);
-            //this.userName = userName;
-            //this.password = password;
-
-#if Debug
-            createEpisodio("2000");
-            getEpisodioCompleto("2000");
-#endif
+            Medicamentos = new ObservableCollection<Medicamento>();
+            Actividades = new ObservableCollection<Actividad>();
+            Episodios = new ObservableCollection<Episodio>();
+        }
+        public Cliente(String userName, String password)
+        {
+            usuario = userName;
+            this.Password = password;
         }
 
         //GET METHODS
@@ -54,7 +158,23 @@ namespace Migrandes
             Debug.WriteLine(resp.ContentType);
 
         }
-    //POST METHODS
+        //POST METHODS
+
+        public async void createEpisodioVoz(String notaVoz)
+        {
+            var httpRequest = (HttpWebRequest)WebRequest.Create(SERVIDOR + URI_CREAR_EPISODIO);
+            httpRequest.Method = "POST";
+            httpRequest.ContentType = "application/json";
+            using (var stream = await Task.Factory.FromAsync<Stream>(httpRequest.BeginGetRequestStream,
+                                                         httpRequest.EndGetRequestStream, null))
+            {
+                String postD = "{\"notaVoz\":\"" + notaVoz + "\"}";
+                byte[] byteArray = Encoding.UTF8.GetBytes(postD);
+
+                await stream.WriteAsync(byteArray, 0, byteArray.Length);
+
+            }
+        }
         public async void createEpisodio(String fecha)
         {
             var httpRequest = (HttpWebRequest)WebRequest.Create(SERVIDOR + URI_CREAR_EPISODIO);
@@ -63,7 +183,7 @@ namespace Migrandes
             using (var stream = await Task.Factory.FromAsync<Stream>(httpRequest.BeginGetRequestStream,
                                                          httpRequest.EndGetRequestStream, null))
             {
-                String postD = "{'fecha':'"+fecha+"'}";
+                String postD = "{\"fecha\":\""+fecha+"\"}";
                 byte[] byteArray = Encoding.UTF8.GetBytes(postD);
 
                 await stream.WriteAsync(byteArray, 0, byteArray.Length);
@@ -82,7 +202,7 @@ namespace Migrandes
             using (var stream = await Task.Factory.FromAsync<Stream>(httpRequest.BeginGetRequestStream,
                                                          httpRequest.EndGetRequestStream, null))
             {
-                String postD = "{'id':'" + id + "','nombres':'" + nombre + "','login':'" + usuario + "','perfil':'" + perfil + "','foto':'" + foto + "','telefono':'"+telefono+"'}";
+                String postD = "{\"id\":\"" + id + "\",\"nombres\":\"" + nombre + "\",\"login\":\"" + usuario + "\",\"perfil\":\"" + perfil + "\",\"foto\":\"" + foto + "\",\"telefono\":\""+telefono+"\"}";
                 byte[] byteArray = Encoding.UTF8.GetBytes(postD);
 
                 await stream.WriteAsync(byteArray, 0, byteArray.Length);
@@ -101,7 +221,7 @@ namespace Migrandes
             using (var stream = await Task.Factory.FromAsync<Stream>(httpRequest.BeginGetRequestStream,
                                                          httpRequest.EndGetRequestStream, null))
             {
-                String postD = "{'id':'" + id + "','nombres':'" + nombre + "','login':'" + usuario + "','perfil':'" + perfil + "','foto':'" + foto + "'}";
+                String postD = "{\"id\":\"" + id + "\",\"nombres\":\"" + nombre + "\",\"login\":\"" + usuario + "\",\"perfil\":\"" + perfil + "\",\"foto\":\"" + foto + "\"}";
                 byte[] byteArray = Encoding.UTF8.GetBytes(postD);
 
                 await stream.WriteAsync(byteArray, 0, byteArray.Length);
